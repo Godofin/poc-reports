@@ -12,14 +12,13 @@
 #   ativo               false para pausar a PoC sem removê-la (padrão: true)
 
 pocs:
-  - nome: "PoC Exemplo - Orquestração de Agentes"
-    cliente: "Cliente Exemplo"
+  - nome: "PDI 2026"
+    cliente: "Teste Interno"
     repos:
-      - "crewAIInc/crewAI"
+      - "Godofin/pdi-2026"
     contexto: >
-      Avaliar o uso de um framework de agentes para automatizar fluxos internos
-      do cliente. Critério de sucesso: protótipo funcional com 2 fluxos.
-    responsavel: "Seu Nome"
-    responsavel_github: ""
+      Repositório de teste usado para validar o pipeline de relatórios semanais.
+    responsavel: "Godofin"
+    responsavel_github: "Godofin"
     notas: ""
     ativo: true
