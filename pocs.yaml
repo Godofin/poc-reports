@@ -1,0 +1,25 @@
+# Lista de PoCs acompanhadas. Cada PoC gera um relatório semanal próprio.
+#
+# Campos:
+#   nome                (obrigatório) nome da PoC, como o cliente conhece
+#   cliente             (obrigatório) nome do cliente
+#   repos               (obrigatório) lista de repositórios "owner/nome"
+#   contexto            (recomendado) objetivo da PoC; ajuda o LLM a dar sentido aos commits
+#   responsavel         nome do responsável (aparece no relatório)
+#   responsavel_github  usuário GitHub do responsável (é mencionado na issue de revisão)
+#   branch              branch analisada (padrão: branch default de cada repo)
+#   notas               observações manuais da semana (bloqueios, reuniões, decisões)
+#   ativo               false para pausar a PoC sem removê-la (padrão: true)
+
+pocs:
+  - nome: "PoC Exemplo - Orquestração de Agentes"
+    cliente: "Cliente Exemplo"
+    repos:
+      - "crewAIInc/crewAI"
+    contexto: >
+      Avaliar o uso de um framework de agentes para automatizar fluxos internos
+      do cliente. Critério de sucesso: protótipo funcional com 2 fluxos.
+    responsavel: "Seu Nome"
+    responsavel_github: ""
+    notas: ""
+    ativo: true

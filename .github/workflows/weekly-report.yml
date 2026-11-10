@@ -1,0 +1,62 @@
+name: Relatório semanal das PoCs
+
+on:
+  schedule:
+    - cron: "0 12 * * 5" # toda sexta às 09:00 (horário de Brasília)
+  workflow_dispatch:
+    inputs:
+      days:
+        description: "Período em dias"
+        default: "7"
+      poc:
+        description: "Gerar só uma PoC (parte do nome). Vazio = todas"
+        required: false
+
+permissions:
+  contents: write # commitar os relatórios
+  issues: write # abrir a issue de revisão
+  models: read # GitHub Models (LLM gratuito)
+
+concurrency:
+  group: weekly-report
+  cancel-in-progress: false
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - name: Gerar relatórios
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # usado pelo GitHub Models
+          POC_GITHUB_TOKEN: ${{ secrets.POC_GITHUB_TOKEN }} # leitura dos repos das PoCs
+          LLM_MODEL: ${{ vars.LLM_MODEL }} # opcional; vazio = gpt-4o-mini
+          DAYS: ${{ inputs.days || '7' }}
+          POC_FILTER: ${{ inputs.poc }}
+          CREWAI_TRACING_ENABLED: "false"
+          OTEL_SDK_DISABLED: "true"
+        run: |
+          python -m poc_reports --days "$DAYS" \
+            ${POC_FILTER:+--poc "$POC_FILTER"} \
+            --manifest "$RUNNER_TEMP/generated.json"
+
+      - name: Commitar relatórios
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports
+          git diff --cached --quiet || git commit -m "Relatórios semanais $(date +%Y-%m-%d)"
+          git push
+
+      - name: Abrir issue de revisão
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python -m poc_reports.review_issue "$RUNNER_TEMP/generated.json"
