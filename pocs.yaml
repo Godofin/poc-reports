@@ -9,6 +9,7 @@
 #   responsavel_github  usuário GitHub do responsável (é mencionado na issue de revisão)
 #   branch              branch analisada (padrão: branch default de cada repo)
 #   notas               observações manuais da semana (bloqueios, reuniões, decisões)
+#   incluir_docs        envia ao LLM trechos dos .md alterados na semana (padrão: true)
 #   ativo               false para pausar a PoC sem removê-la (padrão: true)
 
 pocs:

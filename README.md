@@ -13,7 +13,7 @@ pocs.yaml ──► coleta (API GitHub, sem LLM) ──► Crew ──► report
                                                └ Redator de Status          (checklist p/ o responsável)
 ```
 
-- **Só metadados vão para o LLM**: mensagens de commit, títulos e descrições de PRs e issues. O código (diff) nunca é enviado.
+- **O que vai para o LLM**: mensagens de commit completas, títulos e descrições de PRs e issues, um resumo dos arquivos alterados (pastas e contagem de linhas) e trechos dos documentos Markdown (`.md`) alterados na semana, priorizando as seções de resultados, decisões e limitações. O código-fonte (diff) nunca é enviado. Para não enviar documentação de uma PoC, use `incluir_docs: false` no `pocs.yaml`.
 - O relatório é um **rascunho**: a issue de revisão serve para o responsável ajustar o texto antes de enviar ao cliente.
 - Uma semana sem atividade gera o relatório sem chamar o LLM e marca isso como ponto de atenção.
 

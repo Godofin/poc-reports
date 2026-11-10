@@ -17,6 +17,7 @@ class Poc:
     responsavel_github: str = ""
     branch: str | None = None
     notas: str = ""
+    incluir_docs: bool = True
     ativo: bool = True
 
 

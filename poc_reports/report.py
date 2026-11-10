@@ -64,9 +64,9 @@ Modelo: {model}
 <details>
 <summary>Métricas da semana</summary>
 
-| Commits | PRs mergeados | PRs abertos | Issues fechadas | Issues abertas | Contribuidores |
-|---|---|---|---|---|---|
-| {m['commits']} | {m['prs_merged']} | {m['prs_open']} | {m['issues_closed']} | {m['issues_opened']} | {m['contributors']} |
+| Commits | Arquivos alterados | PRs mergeados | PRs abertos | Issues fechadas | Issues abertas | Contribuidores |
+|---|---|---|---|---|---|---|
+| {m['commits']} | {m['files_changed']} | {m['prs_merged']} | {m['prs_open']} | {m['issues_closed']} | {m['issues_opened']} | {m['contributors']} |
 
 Repositórios: {repos}
 </details>
