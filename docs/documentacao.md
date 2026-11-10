@@ -432,13 +432,13 @@ quando o limite por minuto estoura).
 ### Histórico de provedores
 
 ```mermaid
-timeline
-    title Provedor de LLM ao longo do projeto
-    Planejamento : GitHub Models gratuito (gpt-4o-mini), usando o GITHUB_TOKEN do Actions
-    Primeira execução : Falha — GitHub Models foi descontinuado em 30/07/2026, endpoint responde só "OK"
-    Troca de provedor : Groq com llama-3.3-70b-versatile
-    Primeiro teste no Groq : Modelo removido do Groq (model_not_found)
-    Versão atual : Groq com openai/gpt-oss-120b
+flowchart LR
+    A["Planejamento<br/>GitHub Models gratuito<br/>gpt-4o-mini"] -- "descontinuado em<br/>30/07/2026" --> B["Groq<br/>llama-3.3-70b-versatile"]
+    B -- "modelo removido<br/>(model_not_found)" --> C["Versão atual<br/>Groq<br/>openai/gpt-oss-120b"]
+
+    style A fill:#fde8e8,stroke:#c53030
+    style B fill:#fdf3e1,stroke:#b7791f
+    style C fill:#e6f4ea,stroke:#2f855a
 ```
 
 ---
@@ -577,23 +577,24 @@ python -m poc_reports --dry-run
 ## 15. Histórico do que foi feito
 
 ```mermaid
-timeline
-    title Linha do tempo do projeto
-    Concepção : Ideia inicial — relatório a cada commit
-              : Redesenho — relatório semanal por PoC, para o cliente, vários repositórios
-              : Escolha de LLM gratuito (GitHub Models)
-    Construção : Coletor (commits, PRs, issues) com orçamento de caracteres
-               : Crew com Analista e Redator
-               : Relatório Markdown, issue de revisão, workflow semanal
-               : Teste da coleta em repositório público
-    Implantação : Repositório central poc-reports no GitHub
-                : PoC de teste apontando para Godofin/pdi-2026
-                : Falha — GitHub Models descontinuado
-                : Troca para Groq (gpt-oss-120b) e primeira execução com sucesso
-    Refinamento : Relatório raso — só a 1ª linha do commit era enviada
-                : Mensagem completa, arquivos por pasta e trechos de documentação
-                : Novo formato com resumo executivo, entregas e indicadores
-                : Regra contra afirmações sem base nos dados
+flowchart TB
+    subgraph F1["1 · Concepção"]
+        direction LR
+        a1["Ideia inicial:<br/>relatório a cada commit"] --> a2["Redesenho: relatório<br/>semanal por PoC,<br/>para o cliente"] --> a3["LLM gratuito<br/>(GitHub Models)"]
+    end
+    subgraph F2["2 · Construção"]
+        direction LR
+        b1["Coletor com<br/>orçamento de caracteres"] --> b2["Crew: Analista<br/>+ Redator"] --> b3["Relatório .md, issue<br/>de revisão, workflow"] --> b4["Teste da coleta<br/>em repo público"]
+    end
+    subgraph F3["3 · Implantação"]
+        direction LR
+        c1["Repositório central<br/>poc-reports"] --> c2["PoC de teste:<br/>Godofin/pdi-2026"] --> c3["Falha: GitHub Models<br/>descontinuado"] --> c4["Groq gpt-oss-120b:<br/>1ª execução OK"]
+    end
+    subgraph F4["4 · Refinamento"]
+        direction LR
+        d1["Relatório raso: só a<br/>1ª linha do commit"] --> d2["Mensagem completa,<br/>arquivos e docs"] --> d3["Novo formato com<br/>entregas e indicadores"] --> d4["Regra contra<br/>afirmações sem base"]
+    end
+    F1 --> F2 --> F3 --> F4
 ```
 
 | Etapa | Problema encontrado | Decisão |
