@@ -6,6 +6,8 @@ Usa o **Groq** (tier gratuito, modelo gpt-oss-120b) como LLM e roda no **GitHub 
 
 > O GitHub Models, usado na primeira versão, foi descontinuado pelo GitHub em 30/07/2026.
 
+📘 **Documentação completa, com diagramas:** [docs/documentacao.md](docs/documentacao.md)
+
 ```
 pocs.yaml ──► coleta (API GitHub, sem LLM) ──► Crew ──► reports/<cliente>/<poc>/<ano-Wsemana>.md
                                                │                         │
@@ -22,12 +24,13 @@ pocs.yaml ──► coleta (API GitHub, sem LLM) ──► Crew ──► report
 | Arquivo | O que faz |
 |---|---|
 | `pocs.yaml` | Lista de PoCs: cliente, repositórios, objetivo, responsável, notas da semana |
-| `poc_reports/collector.py` | Busca a atividade da semana na API do GitHub |
+| `poc_reports/collector.py` | Busca a atividade da semana na API do GitHub (commits, arquivos, PRs, issues, docs) |
 | `poc_reports/crew.py` | Agentes, tarefas e configuração do LLM |
 | `poc_reports/report.py` | Monta o Markdown final (cabeçalho, métricas) |
 | `poc_reports/__main__.py` | Ponto de entrada (`python -m poc_reports`) |
 | `poc_reports/review_issue.py` | Abre a issue de revisão com os relatórios |
 | `.github/workflows/weekly-report.yml` | Agendamento semanal (sexta 09:00 BRT) e execução manual |
+| `docs/documentacao.md` | Documentação completa com diagramas |
 
 ## Configuração no GitHub
 
@@ -69,8 +72,8 @@ python -m poc_reports --poc chatbot --days 14
 
 O tier gratuito do Groq tem limites de requisições e de tokens por minuto e por dia. O projeto já respeita esses limites:
 
-- A atividade enviada é cortada em cerca de 12 mil caracteres por PoC; as descrições longas de PR são resumidas.
-- O crew usa `max_rpm=10` e há uma pausa entre as PoCs.
+- A atividade enviada é cortada em 8 mil caracteres e a documentação em 10 mil caracteres por PoC; as descrições longas de PR são resumidas.
+- O crew usa `max_rpm=10`, tenta de novo automaticamente quando o limite estoura (HTTP 429) e há uma pausa entre as PoCs.
 - Cada PoC usa cerca de 2 ou 3 chamadas de LLM.
 
 Com muitas PoCs (dezenas), o limite diário pode ser atingido. Nesse caso, divida a execução em grupos (`--poc`) ou migre para uma API paga.
