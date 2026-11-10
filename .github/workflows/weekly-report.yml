@@ -38,7 +38,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # leitura de repos públicos/deste repo
           POC_GITHUB_TOKEN: ${{ secrets.POC_GITHUB_TOKEN }} # leitura dos repos privados das PoCs
           LLM_API_KEY: ${{ secrets.LLM_API_KEY }} # chave do provedor de LLM (padrão: Groq)
-          LLM_MODEL: ${{ vars.LLM_MODEL }} # opcional; vazio = Llama 3.3 70B no Groq
+          LLM_MODEL: ${{ vars.LLM_MODEL }} # opcional; vazio = gpt-oss-120b no Groq
           LLM_BASE_URL: ${{ vars.LLM_BASE_URL || 'https://api.groq.com/openai/v1' }}
           DAYS: ${{ inputs.days || '7' }}
           POC_FILTER: ${{ inputs.poc }}

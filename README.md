@@ -2,7 +2,7 @@
 
 Gera toda semana um **rascunho de relatório de status por PoC**, para o cliente,
 a partir da atividade nos repositórios do GitHub (commits, PRs e issues).
-Usa o **Groq** (tier gratuito, Llama 3.3 70B) como LLM e roda no **GitHub Actions**.
+Usa o **Groq** (tier gratuito, modelo gpt-oss-120b) como LLM e roda no **GitHub Actions**.
 
 > O GitHub Models, usado na primeira versão, foi descontinuado pelo GitHub em 30/07/2026.
 
@@ -83,7 +83,7 @@ O modelo é definido por variáveis de ambiente, sem mudar o código:
 
 | Variável | Padrão (Groq) | Gemini (gratuito) | Claude (pago) |
 |---|---|---|---|
-| `LLM_MODEL` | `openai/llama-3.3-70b-versatile` | `openai/gemini-2.5-flash` | `anthropic/claude-haiku-4-5-20251001` |
+| `LLM_MODEL` | `openai/openai/gpt-oss-120b` | `openai/gemini-2.5-flash` | `anthropic/claude-haiku-4-5-20251001` |
 | `LLM_BASE_URL` | `https://api.groq.com/openai/v1` | `https://generativelanguage.googleapis.com/v1beta/openai/` | *(vazio)* |
 | `LLM_API_KEY` | chave do Groq | chave do Google AI Studio | chave da Anthropic |
 

@@ -48,8 +48,8 @@ def load_settings() -> Settings:
     return Settings(
         github_token=github_token,
         # O prefixo "openai/" diz ao CrewAI para usar o cliente compatível com OpenAI;
-        # o restante ("llama-3.3-70b-versatile") é o id do modelo no provedor.
-        llm_model=os.getenv("LLM_MODEL") or "openai/llama-3.3-70b-versatile",
+        # o restante ("openai/gpt-oss-120b") é o id do modelo no Groq.
+        llm_model=os.getenv("LLM_MODEL") or "openai/openai/gpt-oss-120b",
         llm_base_url=base_url,
         llm_api_key=os.getenv("LLM_API_KEY"),
     )
