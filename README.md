@@ -2,7 +2,9 @@
 
 Gera toda semana um **rascunho de relatório de status por PoC**, para o cliente,
 a partir da atividade nos repositórios do GitHub (commits, PRs e issues).
-Usa o **GitHub Models** (gratuito) como LLM e roda no **GitHub Actions**.
+Usa o **Groq** (tier gratuito, Llama 3.3 70B) como LLM e roda no **GitHub Actions**.
+
+> O GitHub Models, usado na primeira versão, foi descontinuado pelo GitHub em 30/07/2026.
 
 ```
 pocs.yaml ──► coleta (API GitHub, sem LLM) ──► Crew ──► reports/<cliente>/<poc>/<ano-Wsemana>.md
@@ -30,19 +32,17 @@ pocs.yaml ──► coleta (API GitHub, sem LLM) ──► Crew ──► report
 ## Configuração no GitHub
 
 1. **Crie um repositório central** (privado), por exemplo `consultoria/poc-reports`, e envie este projeto para ele.
-2. **Crie um token de leitura dos repositórios das PoCs** (fine-grained PAT):
+2. **Crie uma chave do Groq** em https://console.groq.com/keys (gratuita) e cadastre-a no repositório central como o secret **`LLM_API_KEY`** (*Settings → Secrets and variables → Actions → New repository secret*).
+3. **Crie um token de leitura dos repositórios das PoCs** (fine-grained PAT):
    - GitHub → Settings → Developer settings → Fine-grained tokens → *Generate new token*
    - *Resource owner*: a organização das PoCs (pode exigir aprovação de um admin da org)
    - *Repository access*: os repositórios das PoCs
    - *Permissions*: **Contents**, **Pull requests** e **Issues**, todas em *Read-only*
-3. No repositório central: *Settings → Secrets and variables → Actions → New repository secret*
-   - Nome `POC_GITHUB_TOKEN`, com o token do passo 2.
-   - Se as PoCs estiverem no próprio repositório central (raro), isso não é necessário.
+   - Cadastre-o como o secret `POC_GITHUB_TOKEN`.
+   - Se as PoCs estiverem em repositórios **públicos**, isso não é necessário: o `GITHUB_TOKEN` automático do Actions já consegue lê-los.
 4. Em *Settings → Actions → General*, deixe as Actions habilitadas.
 5. Edite o `pocs.yaml` com as PoCs reais.
 6. Teste em *Actions → Relatório semanal das PoCs → Run workflow*.
-
-O LLM usa o `GITHUB_TOKEN` automático do Actions (permissão `models: read` já declarada no workflow), então não precisa de nenhuma chave extra.
 
 ## Rodar localmente
 
@@ -52,9 +52,10 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
-Crie um fine-grained PAT com **Account permissions → Models: Read**, mais leitura nos repositórios das PoCs, e defina:
+Defina a chave do Groq e, se as PoCs forem privadas, um token GitHub com leitura nos repositórios:
 
 ```powershell
+$env:LLM_API_KEY = "gsk_..."
 $env:GITHUB_TOKEN = "github_pat_..."
 ```
 
@@ -64,9 +65,9 @@ python -m poc_reports                      # gera os relatórios em reports/
 python -m poc_reports --poc chatbot --days 14
 ```
 
-## Limites do GitHub Models gratuito
+## Limites do tier gratuito
 
-O tier gratuito tem limites por minuto, por dia e de tamanho de requisição (para o `gpt-4o-mini`, cerca de 8 mil tokens de entrada por chamada). O projeto já respeita esses limites:
+O tier gratuito do Groq tem limites de requisições e de tokens por minuto e por dia. O projeto já respeita esses limites:
 
 - A atividade enviada é cortada em cerca de 12 mil caracteres por PoC; as descrições longas de PR são resumidas.
 - O crew usa `max_rpm=10` e há uma pausa entre as PoCs.
@@ -74,21 +75,23 @@ O tier gratuito tem limites por minuto, por dia e de tamanho de requisição (pa
 
 Com muitas PoCs (dezenas), o limite diário pode ser atingido. Nesse caso, divida a execução em grupos (`--poc`) ou migre para uma API paga.
 
-Confira os limites atuais na documentação do GitHub Models (seção *Rate limits*).
+Confira os limites atuais em https://console.groq.com/settings/limits.
 
 ## Trocar o modelo / migrar para o Claude
 
 O modelo é definido por variáveis de ambiente, sem mudar o código:
 
-| Variável | Padrão | Exemplo (Claude) |
-|---|---|---|
-| `LLM_MODEL` | `openai/openai/gpt-4o-mini` | `anthropic/claude-haiku-4-5-20251001` |
-| `LLM_BASE_URL` | `https://models.github.ai/inference` | *(vazio)* |
-| `LLM_API_KEY` | `GITHUB_TOKEN` | chave da Anthropic |
+| Variável | Padrão (Groq) | Gemini (gratuito) | Claude (pago) |
+|---|---|---|---|
+| `LLM_MODEL` | `openai/llama-3.3-70b-versatile` | `openai/gemini-2.5-flash` | `anthropic/claude-haiku-4-5-20251001` |
+| `LLM_BASE_URL` | `https://api.groq.com/openai/v1` | `https://generativelanguage.googleapis.com/v1beta/openai/` | *(vazio)* |
+| `LLM_API_KEY` | chave do Groq | chave do Google AI Studio | chave da Anthropic |
 
-No Actions, `LLM_MODEL` vem de *Settings → Variables*. Para o Claude, adicione também `LLM_BASE_URL` (vazio) e `LLM_API_KEY` no workflow, e instale `crewai[anthropic]`.
+No Actions, `LLM_MODEL` e `LLM_BASE_URL` vêm de *Settings → Secrets and variables → Actions → Variables*, e a chave vem do secret `LLM_API_KEY`. Para o Claude, remova o `LLM_BASE_URL` do workflow e adicione `crewai[anthropic]` ao `requirements.txt`.
 
-> O prefixo duplo `openai/openai/...` é proposital: o primeiro `openai/` faz o CrewAI usar o cliente compatível com OpenAI, e o restante (`openai/gpt-4o-mini`) é o id do modelo no GitHub Models.
+> O prefixo `openai/` no `LLM_MODEL` faz o CrewAI usar o cliente compatível com OpenAI; o restante é o id do modelo no provedor. Os ids de modelo mudam com o tempo: confira os disponíveis no console do provedor.
+>
+> Atenção: no tier gratuito do Gemini, o Google pode usar os dados enviados para melhorar os produtos dele. Considere isso antes de usar com PoCs reais.
 
 ## Dicas para relatórios melhores
 

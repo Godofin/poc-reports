@@ -14,8 +14,8 @@ from github.GithubException import GithubException
 
 from .config import Poc
 
-# O GitHub Models gratuito aceita ~8k tokens de entrada por requisição.
-# ~12k caracteres de atividade deixam folga para os prompts dos agentes.
+# Tiers gratuitos têm limites baixos de tokens por minuto/requisição.
+# ~12k caracteres (~3k tokens) de atividade deixam folga para os prompts dos agentes.
 MAX_ACTIVITY_CHARS = 12_000
 MAX_BODY_CHARS = 200
 

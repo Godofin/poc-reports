@@ -55,7 +55,7 @@ def main() -> int:
                 body = empty_week_body(activity)  # não gasta chamada de LLM
             else:
                 body = generate_report_body(activity, llm)
-                time.sleep(5)  # folga para o limite por minuto do GitHub Models
+                time.sleep(5)  # folga para o limite por minuto do tier gratuito
         except Exception as e:  # uma PoC com erro não deve derrubar as demais
             print(f"    ERRO ao gerar relatório: {e}", file=sys.stderr)
             failures.append({"poc": poc.nome, "error": str(e)})

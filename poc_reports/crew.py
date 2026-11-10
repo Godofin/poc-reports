@@ -9,7 +9,7 @@ from .config import Settings
 def build_llm(settings: Settings) -> LLM:
     if not settings.llm_api_key:
         raise RuntimeError(
-            "Nenhuma chave de LLM encontrada. Defina GITHUB_TOKEN (GitHub Models) ou LLM_API_KEY."
+            "Nenhuma chave de LLM encontrada. Defina LLM_API_KEY (ex.: chave do Groq)."
         )
     if settings.llm_base_url:
         return LLM(
@@ -85,7 +85,7 @@ def build_crew(llm: LLM) -> Crew:
         context=[analise],
     )
 
-    # max_rpm respeita o limite de requisições por minuto do GitHub Models gratuito.
+    # max_rpm respeita o limite de requisições por minuto dos tiers gratuitos.
     return Crew(
         agents=[analista, redator],
         tasks=[analise, relatorio],
